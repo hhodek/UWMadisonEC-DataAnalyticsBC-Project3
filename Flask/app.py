@@ -1,12 +1,11 @@
 # Import Dependencies
-import numpy as np
-
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+import sqlite3
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 #################################################
 # Database Setup
@@ -38,7 +37,7 @@ app = Flask(__name__)
 # Home route
 @app.route("/")
 def Home():
-    return(
+    return (
         f"Events: /api/v1.0/events"
         f"<br>"
         f"Earthquakes: /api/v1.0/earthquakes"
@@ -46,7 +45,6 @@ def Home():
         f"Temp: /api/v1.0/temp"
         f"<br>"
         f"Precipitation: /api/v1.0/precip"
-
     )
 
 @app.route("/api/v1.0/events")
@@ -69,27 +67,6 @@ def events():
 
 
     return jsonify(event_data)
-
-@app.route("/api/v1.0/earthquakes")
-def earthquakes():
-
-    session = Session(engine)
-
-    results = session.query(Earthquakes.mag, Earthquakes.place, Earthquakes.coordinates0, Earthquakes.coordinates1).all()
-
-    session.close()
-
-    earthquake_data = []
-    for mag, place, coordinates0, coordinates1 in results:
-        earthquake_dict = {}
-        earthquake_dict["mag"] = mag
-        earthquake_dict["place"] = place
-        earthquake_dict["lon"] = coordinates0
-        earthquake_dict["lat"] = coordinates1
-        earthquake_data.append(earthquake_dict)
-
-
-    return jsonify(earthquake_data)
 
 @app.route("/api/v1.0/temp")
 def temp():
@@ -135,7 +112,38 @@ def precip():
 
     return jsonify(precip_data)
 
+@app.route("/api/v1.0/earthquakes")
+def status():
+    conn = sqlite3.connect('../Resources/earthquake.sqlite')
+    conn.row_factory = sqlite3.Row
+    db = conn.cursor()
+    rows = db.execute('''
+    SELECT * from earthquakes
+    ''').fetchall()
 
+    conn.commit()
+    conn.close()
+
+    json_format = [dict(ix) for ix in rows]
+    geojson = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                 "properties" : {
+                    'mag': data['properties/mag'],
+                    'place': data['properties/place'],
+                    'time': data['properties/time'],
+                    'sig': data['properties/sig']
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [data["geometry/coordinates/0"], data["geometry/coordinates/1"], data["geometry/coordinates/2"] ],     
+                }
+            } for data in json_format]
+    }
+
+    return jsonify(geojson)
 
 
 # Run debugger
