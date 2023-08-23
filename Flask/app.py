@@ -84,8 +84,8 @@ def earthquakes():
         earthquake_dict = {}
         earthquake_dict["mag"] = mag
         earthquake_dict["place"] = place
-        earthquake_dict["lat"] = coordinates0
-        earthquake_dict["long"] = coordinates1
+        earthquake_dict["lon"] = coordinates0
+        earthquake_dict["lat"] = coordinates1
         earthquake_data.append(earthquake_dict)
 
 
