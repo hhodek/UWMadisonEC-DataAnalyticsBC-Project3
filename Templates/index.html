@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Weather Events</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+ 
  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -41,6 +41,29 @@
     </div>
   </div>
 
+ <!-- Dropdowns for selecting X and Y variables -->
+ <div class="row">
+  <div class="col-md-12">
+      <label for="x-variable">Select X Variable:</label>
+      <select id="x-variable" class="form-control"></select>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <label for="y-variable">Select Y Variable:</label>
+      <select id="y-variable" class="form-control"></select>
+  </div>
+</div>
+
+  <!-- Add a div to display the scatter plot -->
+  <div class="row">
+    <div class="col-md-12">
+      <div id="scatter-plot"></div>
+    </div>
+  </div>
+</div>
+
+
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
@@ -49,12 +72,14 @@
   <!-- D3 JavaScript -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
 
+  <!-- Plotly -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   
-  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-
   <!-- Our Javascript -->
-  
+  <script src="logic2.js"></script>
 
 </body>
 
 </html>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
