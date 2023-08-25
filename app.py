@@ -6,12 +6,12 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 
-from flask import Flask, jsonify, render_template
-#from flask_cors import CORS
+from flask import Flask, jsonify
+
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///Resources/weather.sqlite")
+engine = create_engine("sqlite:///../Resources/weather.sqlite")
 
 # Reflect an existing database into a new model
 Base = automap_base()
@@ -30,7 +30,7 @@ Events = Base.classes.events
 # Flask Setup
 #################################################
 app = Flask(__name__)
-#CORS(app, origins=['http://localhost:5000'])
+
 #################################################
 # Flask Routes
 #################################################
@@ -38,8 +38,16 @@ app = Flask(__name__)
 # Home route
 @app.route("/")
 def Home():
-    return render_template('index.html')
+    return(
+        f"Events: /api/v1.0/events"
+        f"<br>"
+        f"Earthquakes: /api/v1.0/earthquakes"
+        f"<br>"
+        f"Temp: /api/v1.0/temp"
+        f"<br>"
+        f"Precipitation: /api/v1.0/precip"
 
+    )
 
 @app.route("/api/v1.0/events")
 def events():
