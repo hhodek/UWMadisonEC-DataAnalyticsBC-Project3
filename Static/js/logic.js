@@ -1,5 +1,5 @@
 // Create each Layer Group
-// let earthquakeData = new L.layerGroup();
+let earthquakeData = new L.layerGroup();
 let volcanoData = new L.layerGroup();
 let tornadoData = new L.layerGroup();
 let fireData = new L.layerGroup();
@@ -20,7 +20,7 @@ let baseMap = {
 
 // Add overlayMaps object
 let overlayMaps = {
-    // "Earthquakes": earthquakeData,
+    "Earthquakes": earthquakeData,
     "Volcanos": volcanoData,
     "Tornados": tornadoData,
     "Fires": fireData,
@@ -40,11 +40,65 @@ L.control.layers(baseMap, overlayMaps, {
 }).addTo(myMap);
 
 // Store API to variables
-// let earthquakeURL = "/api/v1.0/earthquake";
+let earthquakeURL = "/api/v1.0/earthquake";
 let fireURL = "/api/v1.0/fire";
 let tornadoURL = "/api/v1.0/tornado";
 let tsunamiURL = "/api/v1.0/tsunami";
 let volcanoURL = "/api/v1.0/volcano";
+
+// Create a createColor function using depth as the argument
+// the higher the depth, the darker the color
+function createColor(depth) {
+    return depth > 90 ? '#bd0026' :
+           depth <= 90 && depth > 70 ? '#f03b20' :
+           depth <= 70 && depth > 50 ? '#fd8d3c' :
+           depth <= 50 && depth > 30 ? '#feb24c' :
+           depth <= 30 && depth > 10 ? '#fed976' :
+                                       '#ffffb2';
+}
+// Create function to calculate the markersize
+// The higher the magnitude, the bigger the marker
+function markerSize(mag) {
+    return mag * 20000
+}
+// Grab the data with D3 and add to the createFeatures function
+d3.json(earthquakeURL).then((data) => {
+    console.log(data);
+
+    // Create the onEachFeature function within the previous function
+    // Add a popup to each marker with the place, time, and sig 
+    function onEachFeature(feature, layer) {
+        layer.bindPopup(`<h3>Place: ${feature.properties.place}</h3><hr>
+         <p><b>Time: </b>${new Date(feature.properties.time)}</p>
+         <p><b>Significance: </b>${feature.properties.sig}</p>
+         <p><b>Magnitude: </b>${feature.properties.mag}</p>
+         <p><b>Depth: </b>${feature.geometry.coordinates[2]}</p>`);
+    }
+
+    // create an earthquakes object that will hold the geoJSON data
+    // Add the properties: onEachFeature and pointToLayer
+    L.geoJSON(data, {
+
+        // Attatch the function from before onto onEachLayer
+        onEachFeature: onEachFeature,
+
+        // PointToLayer allows circle markers
+        pointToLayer: function(feature, latlng) {
+
+            // Color is depth and radius is mag
+            let markers = {
+                color: "white",
+                fillColor: createColor(feature.geometry.coordinates[2]),
+                fillOpacity: 0.8,
+                weight: 0.3,
+                radius: markerSize(feature.properties.mag)
+            }
+            // Return the marker as  L.circle with latlng as a param
+            return L.circle(latlng, markers);
+        }
+    }).addTo(earthquakeData)
+
+});
 
 // Grab volcano data with d3
 d3.json(volcanoURL).then((data) => {
@@ -117,7 +171,7 @@ d3.json(fireURL).then((data) => {
 d3.json(tsunamiURL).then((data) => {
 
     console.log(data);
-   for (let i =0; i < data.length; i++) {
+    for (let i =0; i < data.length; i++) {
         let tsunami = data[i];
 
         L.circle([tsunami.lat, tsunami.lon], {
