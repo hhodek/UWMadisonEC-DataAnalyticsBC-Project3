@@ -4,8 +4,9 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 import sqlite3
+import json
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, Response
 
 #################################################
 # Database Setup
@@ -21,7 +22,7 @@ Base.prepare(autoload_with=engine)
 # Save references to each table
 Dailey_weather = Base.classes.daily_weather
 Events = Base.classes.events
-Volcano = Base.classes.volcano
+Volcano = Base.classes.volcanos
 Fire = Base.classes.fires
 Tsunami = Base.classes.tsunamis
 Tornado = Base.classes.tornados
@@ -186,38 +187,49 @@ def precip():
     return jsonify(precip_data)
 
 # Create Earthquakes Route
-@app.route("/api/v1.0/earthquakes")
+@app.route("/api/v1.0/earthquake")
 def status():
-    conn = sqlite3.connect('../Resources/earthquake.sqlite')
+    conn = sqlite3.connect('Resources/earthquake.sqlite')
     conn.row_factory = sqlite3.Row
     db = conn.cursor()
-    rows = db.execute('''
-    SELECT * from earthquakes
-    ''').fetchall()
+    rows = db.execute('SELECT * from earthquakes').fetchall()
 
-    conn.commit()
+    # conn.commit()
     conn.close()
 
-    json_format = [dict(ix) for ix in rows]
-    geojson = {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                 "properties" : {
+    # json_format = [dict(ix) for ix in rows]
+    geojson_features = []
+
+    for data in rows:
+        geojson_feature = {
+            "type": "Feature",
+            "properties" : {
                     'mag': data['properties/mag'],
                     'place': data['properties/place'],
                     'time': data['properties/time'],
                     'sig': data['properties/sig']
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [data["geometry/coordinates/0"], data["geometry/coordinates/1"], data["geometry/coordinates/2"] ],     
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            data["geometry/coordinates/0"], 
+                            data["geometry/coordinates/1"], 
+                            data["geometry/coordinates/2"] 
+                        ]     
                 }
-            } for data in json_format]
+        }
+        geojson_features.append(geojson_feature)
+    
+    geojson = {
+        "type": "FeatureCollection",
+        "features": geojson_features
     }
+    
+    geojson_str = json.dumps(geojson)
 
-    return jsonify(geojson)
+    response = Response(geojson_str, content_type='application/geo+json')
+
+    return response
 
 # Run debugger
 if __name__ == '__main__':
