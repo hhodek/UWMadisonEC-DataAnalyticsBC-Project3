@@ -1,12 +1,11 @@
 # Import Dependencies
-import numpy as np
-
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+import sqlite3
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 #################################################
 # Database Setup
@@ -20,11 +19,12 @@ Base = automap_base()
 Base.prepare(autoload_with=engine)
 
 # Save references to each table
-Earthquakes = Base.classes.earthquakes
-
 Dailey_weather = Base.classes.daily_weather
-
 Events = Base.classes.events
+Volcano = Base.classes.volcano
+Fire = Base.classes.fires
+Tsunami = Base.classes.tsunamis
+Tornado = Base.classes.tornados
 
 #################################################
 # Flask Setup
@@ -38,59 +38,108 @@ app = Flask(__name__)
 # Home route
 @app.route("/")
 def Home():
-    return(
-        f"Events: /api/v1.0/events"
-        f"<br>"
-        f"Earthquakes: /api/v1.0/earthquakes"
-        f"<br>"
-        f"Temp: /api/v1.0/temp"
-        f"<br>"
-        f"Precipitation: /api/v1.0/precip"
+    return render_template('index.html')
 
-    )
-
-@app.route("/api/v1.0/events")
-def events():
+# Create Volcano Route
+@app.route("/api/v1.0/volcano")
+def volcano():
 
     session = Session(engine)
 
-    results = session.query(Events.type, Events.description, Events.eventLatitude, Events.eventLongitude).all()
-
+    results = session.query(Volcano.Name, Volcano.Country, Volcano.Latitude, Volcano.Longitude, \
+                            Volcano.Elevation, Volcano.Type, Volcano.DEATHS)
     session.close()
 
-    event_data = []
-    for type, description, eventLatitude, eventLongitude in results:
-        event_dict = {}
-        event_dict["type"] = type
-        event_dict["description"] = description
-        event_dict["lat"] = eventLatitude
-        event_dict["long"] = eventLongitude
-        event_data.append(event_dict)
+    volcano_data = []
+    for Name, Country, Latitude, Longitude, Elevation, Type, DEATHS in results:
+        volcano_dict = {}
+        volcano_dict["name"] = Name
+        volcano_dict["country"] = Country
+        volcano_dict["lat"] = Latitude
+        volcano_dict["long"] = Longitude
+        volcano_dict["elevation"] = Elevation
+        volcano_dict["type"] = Type
+        volcano_dict["deaths"] = DEATHS
+        volcano_data.append(volcano_dict)
 
 
-    return jsonify(event_data)
+    return jsonify(volcano_data)
 
-@app.route("/api/v1.0/earthquakes")
-def earthquakes():
+# Create Fire Route
+@app.route("/api/v1.0/fire")
+def fire():
 
     session = Session(engine)
 
-    results = session.query(Earthquakes.mag, Earthquakes.place, Earthquakes.coordinates0, Earthquakes.coordinates1).all()
-
+    results = session.query(Fire.AcresBurned, Fire.Extinguished, Fire.Injuries, Fire.Latitude, \
+                            Fire.Location, Fire.Longitude, Fire.Name)
     session.close()
 
-    earthquake_data = []
-    for mag, place, coordinates0, coordinates1 in results:
-        earthquake_dict = {}
-        earthquake_dict["mag"] = mag
-        earthquake_dict["place"] = place
-        earthquake_dict["lon"] = coordinates0
-        earthquake_dict["lat"] = coordinates1
-        earthquake_data.append(earthquake_dict)
+    fire_data = []
+    for AcresBurned, Extinguished, Injuries, Latitude, Location, Longitude, Name in results:
+        fire_dict = {}
+        fire_dict["acresBurned"] = AcresBurned
+        fire_dict["extinguished"] = Extinguished
+        fire_dict["injuries"] = Injuries
+        fire_dict["lat"] = Latitude
+        fire_dict["location"] = Location
+        fire_dict["lon"] = Longitude
+        fire_dict["name"] = Name
+        fire_data.append(fire_dict)
 
 
-    return jsonify(earthquake_data)
+    return jsonify(fire_data)
 
+#Create Tsunami Route
+@app.route("/api/v1.0/tsunami")
+def tsunami():
+
+    session = Session(engine)
+
+    results = session.query(Tsunami.YEAR, Tsunami.LATITUDE, Tsunami.LONGITUDE, Tsunami.COUNTRY, \
+                            Tsunami.CAUSE)
+    session.close()
+
+    tsunami_data = []
+    for YEAR, LATITUDE, LONGITUDE, COUNTRY, CAUSE in results:
+        tsunami_dict = {}
+        tsunami_dict["year"] = YEAR
+        tsunami_dict["lat"] = LATITUDE
+        tsunami_dict["lon"] = LONGITUDE
+        tsunami_dict["country"] = COUNTRY
+        tsunami_dict["cause"] = CAUSE
+        tsunami_data.append(tsunami_dict)
+
+
+    return jsonify(tsunami_data)
+
+# Create Tornado Route
+@app.route("/api/v1.0/tornado")
+def tornado():
+
+    session = Session(engine)
+
+    results = session.query(Tornado.date, Tornado.mag, Tornado.inj, Tornado.fat, Tornado.slat, \
+                            Tornado.slon, Tornado.len, Tornado.wid)
+    session.close()
+
+    tornado_data = []
+    for date, mag, inj, fat, slat, slon, len, wid in results:
+        tornado_dict = {}
+        tornado_dict["date"] = date
+        tornado_dict["mag"] = mag
+        tornado_dict["inj"] = inj
+        tornado_dict["fat"] = fat
+        tornado_dict["lat"] = slat
+        tornado_dict["lon"] = slon
+        tornado_dict["len"] = len
+        tornado_dict["wid"] = wid
+        tornado_data.append(tornado_dict)
+
+
+    return jsonify(tornado_data)
+
+# Create Temp Route
 @app.route("/api/v1.0/temp")
 def temp():
 
@@ -113,6 +162,7 @@ def temp():
 
     return jsonify(temp_data)
 
+# Create Precipitation Route
 @app.route("/api/v1.0/precip")
 def precip():
 
@@ -135,8 +185,39 @@ def precip():
 
     return jsonify(precip_data)
 
+# Create Earthquakes Route
+@app.route("/api/v1.0/earthquakes")
+def status():
+    conn = sqlite3.connect('../Resources/earthquake.sqlite')
+    conn.row_factory = sqlite3.Row
+    db = conn.cursor()
+    rows = db.execute('''
+    SELECT * from earthquakes
+    ''').fetchall()
 
+    conn.commit()
+    conn.close()
 
+    json_format = [dict(ix) for ix in rows]
+    geojson = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                 "properties" : {
+                    'mag': data['properties/mag'],
+                    'place': data['properties/place'],
+                    'time': data['properties/time'],
+                    'sig': data['properties/sig']
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [data["geometry/coordinates/0"], data["geometry/coordinates/1"], data["geometry/coordinates/2"] ],     
+                }
+            } for data in json_format]
+    }
+
+    return jsonify(geojson)
 
 # Run debugger
 if __name__ == '__main__':
