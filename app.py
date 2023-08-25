@@ -10,7 +10,7 @@ from flask import Flask, jsonify, render_template
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("sqlite:///../Resources/weather.sqlite")
+engine = create_engine("sqlite:///Resources/weather.sqlite")
 
 # Reflect an existing database into a new model
 Base = automap_base()
