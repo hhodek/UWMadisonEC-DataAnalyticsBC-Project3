@@ -29,7 +29,7 @@ function createMap() {
 
     // Create a map object with default layers
     let myMap = L.map("map", {
-        center: [37.09, -95.71],
+        center: [41, 35],
         zoom: 5, 
         layers: [street, earthquakeData]
     });

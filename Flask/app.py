@@ -38,22 +38,9 @@ app = Flask(__name__)
 # Home route
 @app.route("/")
 def Home():
-    return (
-        f"Volcanos: /api/v1.0/volcano"
-        f"<br>"
-        f"Fires: /api/v1.0/fire"
-        f"<br>"
-        f"Tsunamis: /api/v1.0/tsunami"
-        f"<br>"
-        f"Tornados: /api/v1.0/tornado"
-        "<br>"
-        f"Earthquakes: /api/v1.0/earthquakes"
-        f"<br>"
-        f"Temp: /api/v1.0/temp"
-        f"<br>"
-        f"Precipitation: /api/v1.0/precip"
-    )
+    return render_template('index.html')
 
+# Create Volcano Route
 @app.route("/api/v1.0/volcano")
 def volcano():
 
@@ -78,6 +65,7 @@ def volcano():
 
     return jsonify(volcano_data)
 
+# Create Fire Route
 @app.route("/api/v1.0/fire")
 def fire():
 
@@ -102,6 +90,7 @@ def fire():
 
     return jsonify(fire_data)
 
+#Create Tsunami Route
 @app.route("/api/v1.0/tsunami")
 def tsunami():
 
@@ -124,7 +113,7 @@ def tsunami():
 
     return jsonify(tsunami_data)
 
-
+# Create Tornado Route
 @app.route("/api/v1.0/tornado")
 def tornado():
 
@@ -150,7 +139,7 @@ def tornado():
 
     return jsonify(tornado_data)
 
-
+# Create Temp Route
 @app.route("/api/v1.0/temp")
 def temp():
 
@@ -173,7 +162,7 @@ def temp():
 
     return jsonify(temp_data)
 
-
+# Create Precipitation Route
 @app.route("/api/v1.0/precip")
 def precip():
 
@@ -196,6 +185,7 @@ def precip():
 
     return jsonify(precip_data)
 
+# Create Earthquakes Route
 @app.route("/api/v1.0/earthquakes")
 def status():
     conn = sqlite3.connect('../Resources/earthquake.sqlite')
@@ -228,7 +218,6 @@ def status():
     }
 
     return jsonify(geojson)
-
 
 # Run debugger
 if __name__ == '__main__':
