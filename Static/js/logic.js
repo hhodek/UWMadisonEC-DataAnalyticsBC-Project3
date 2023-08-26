@@ -26,8 +26,8 @@ let overlayMaps = {
 
 // Create a map object with default layers
 let myMap = L.map("map", {
-    center: [23.927268, -98.263308],
-    zoom: 3.45, 
+    center: [27.133702, -95.077545],
+    zoom: 3.5, 
     layers: [street, earthquakeData]
 });
 
@@ -340,8 +340,8 @@ d3.json(tsunamiURL).then((data) => {
             <p><b>Cause of Tsunami: </b>${tsunami.cause}<p/> 
             <p><b>Earthquake Magnitude: </b>${tsunami.eqMag}</p>`);
 
-        marker.addTo(tsunamiData);
-        animateTsunamiMarker(marker);
+        marker.addTo(tsunamiData); // Add marker to the tsunamiData
+        animateTsunamiMarker(marker); // Start animation for this marker
     }
 });
 
