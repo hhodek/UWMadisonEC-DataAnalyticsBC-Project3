@@ -26,8 +26,8 @@ let overlayMaps = {
 
 // Create a map object with default layers
 let myMap = L.map("map", {
-    center: [37.09, -95.71],
-    zoom: 5, 
+    center: [23.927268, -98.263308],
+    zoom: 3.45, 
     layers: [street, earthquakeData]
 });
 
