@@ -84,11 +84,18 @@ d3.json(earthquakeURL).then((data) => {
                 depth: feature.geometry.coordinates[2], // Store depth for animation
                 mag: feature.properties.mag // Store magnitude for animation
             }).addTo(earthquakeData);
+
+            marker.on('click', function () {
+                myMap.setView(marker.getLatLng(), 7); // Add zoom to each marker when clicked
+            });
+
             earthquakeMarkers.push(marker); // Store the marker in the array
             animateMarker(marker); // Start animation for this marker
             return marker;
         }
     }).addTo(earthquakeData);
+
+
 });
 
 // Define a function for earthquake marker animation
@@ -162,6 +169,10 @@ d3.json(volcanoURL).then((data) => {
             <p><b>Elevation: </b>${volcano.elevation}</p>
             <p><b>Deaths: </b>${volcano.deaths}</p>`);
 
+        marker.on('click', function () {
+            myMap.setView(marker.getLatLng(), 5); // Add zoom to each marker when clicked
+        });
+
         marker.addTo(volcanoData);;
         animateVolcanoMarker(marker);
     }
@@ -221,6 +232,10 @@ d3.json(tornadoURL).then((data) => {
             <p><b>Length of Tornado: </b>${tornado.len}</p>
             <p><b>Injuries: </b>${tornado.inj}</p>
             <p><b>Fatalities: </b>${tornado.fat}</p>`).addTo(tornadoData);
+
+        marker.on('click', function () {
+            myMap.setView(marker.getLatLng(), 7); // Add zoom to each marker when clicked
+        });
 
         animateTornadoMarker(marker); // Start animation for this marker
     }
@@ -340,8 +355,15 @@ d3.json(tsunamiURL).then((data) => {
             <p><b>Cause of Tsunami: </b>${tsunami.cause}<p/> 
             <p><b>Earthquake Magnitude: </b>${tsunami.eqMag}</p>`);
 
+        marker.on('click', function () {
+            myMap.setView(marker.getLatLng(), 6); // Add zoom to each marker when clicked
+        });
+
         marker.addTo(tsunamiData); // Add marker to the tsunamiData
         animateTsunamiMarker(marker); // Start animation for this marker
     }
 });
+
+
+
 
