@@ -60,9 +60,9 @@ for users all all levels.
 
 ## Contributors
 
-Hannah Hodek
-Peter Xiong
-Kailey Carbone
+Hannah Hodek  
+Peter Xiong  
+Kailey Carbone  
 
 ---
 
