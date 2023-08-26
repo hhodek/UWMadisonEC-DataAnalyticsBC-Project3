@@ -1,12 +1,58 @@
 body {
     padding: 0;
     margin: 0;
+    background-color: rgb(151, 187, 186);
+    font-family: fantasy;
 }
+
+.jumbotron h1 {
+    color: rgb(67, 97, 102);
+}
+
+.jumbotron {
+    color: rgb(67, 97, 102);
+}
+
+h1 {
+    font-family: math;
+}
+
+.leaflet-control-layers-expanded {
+    padding: 6px 10px 6px 6px;
+    color: #333;
+    background: #e8e3cc;
+}
+
+/* Change the font in the layer control */
+.leaflet-control {
+    font-family: monaco, monospaced; /* Set the desired font family */
+    font-weight: bold; /* Set the font weight to bold */
+    /* You can also adjust other font properties such as font-size and color */
+}
+
   
 #map,
 body,
 html {
     width: 80%;
-    height: 700px;
+    height: 500px;
     position: relative;
 }
+
+.row {
+    margin-right: -350px;
+    margin-left: -15px;
+}
+
+.map-container {
+    box-sizing: border-box; /* Include border in width and height */
+    border: 2px solid black; /* Add a blue border around the map */
+    border-radius: 10px; /* Apply rounded corners to the border */
+    padding: 10px; /* Add some space inside the container */
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Apply a subtle shadow */
+    height: 500px; /* Set the height of the map container */
+    margin-bottom: 20px; /* Adjust the value to move the map higher */
+}
+
+
+
