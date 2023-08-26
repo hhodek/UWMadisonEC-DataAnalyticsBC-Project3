@@ -1,8 +1,14 @@
-// Load data from both endpoints
-Promise.all([
-  d3.json('/api/v1.0/temp'),  // Load data from the first endpoint
-  d3.json('/api/v1.0/precip')     // Load data from the second endpoint
-]).then(([precipData, tempData]) => {
+// Load data from the first endpoint
+//d3.json('/api/v1.0/temp').then(tempData => {
+  // Load data from the second endpoint
+//  return d3.json('/api/v1.0/precip').then(precipData => {
+  //  return { precipData, tempData };
+ // });
+//}).then(({ precipData, tempData }) => {
+  Promise.all([
+    d3.json('/api/v1.0/temp'),  // Load data from the first endpoint
+    d3.json('/api/v1.0/precip')     // Load data from the second endpoint
+  ]).then(([precipData, tempData]) => {
   // Combine data from both endpoints into a single array
   const allData = [...precipData, ...tempData];
 
@@ -14,7 +20,7 @@ Promise.all([
     x: d3.select('#x-variable'),
     y: d3.select('#y-variable')
   };
-
+  
   // Populate dropdown options with variable names
   variables.forEach(variable => {
     for (const key in variableSelects) {
@@ -42,11 +48,7 @@ Promise.all([
         size: 10,
         opacity: 0.7, // Adjust marker transparency
         color: 'blue', // Set marker color
-        // colorscale: 'Viridis', color scale based on data values
-        // cmin: minValue,
-        // cmax: maxValue,
-        // color: yValues,
-        // colorbar: { title: 'Colorbar Title' }
+        colorscale: 'Viridis', //color scale based on data values
       }
     }];
 
@@ -70,11 +72,10 @@ Promise.all([
       xVariable = variableSelects.x.property('value');
       yVariable = variableSelects.y.property('value');
     } else {
-      xVariable = variableSelects.y.property('value');
-      yVariable = variableSelects.x.property('value');
+      xVariable = variableSelects.y.property('value'); // This should be xVariable, not yVariable
+      yVariable = variableSelects.x.property('value'); // This should be yVariable, not xVariable
     }
   }
-
   // Event listeners for variable selections
   for (const key in variableSelects) {
     variableSelects[key].on('change', () => {

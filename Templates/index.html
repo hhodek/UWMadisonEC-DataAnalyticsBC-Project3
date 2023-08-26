@@ -28,10 +28,25 @@
     <div class="row justify-content-center">
         <div class="col-md-12 jumbotron text-center">
             <h1>Weather Events</h1>
-            <p>Use the interactive map below to explore the dataset</p>
+            <p>Use the interactive map and scatter plot below to explore the data!</p>
         </div>
     </div>
     <div id="map" class="map-container"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <label for="x-variable">X Variable:</label>
+      <select id="x-variable" class="form-control"></select>
+    </div>
+    <div class="col-md-6">
+      <label for="y-variable">Y Variable:</label>
+      <select id="y-variable" class="form-control"></select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="scatter-plot"></div>
+    </div>
   </div>
 
   <!-- Leaflet JS -->
@@ -50,11 +65,11 @@
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.css">
   <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.0.3/dist/MarkerCluster.Default.css">
 
-  <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
 
   <!-- Our Javascript -->
   <script type="text/javascript" src="static/js/logic.js"></script>
-  <!-- <script type="text/javascript" src="../static/js/logic2.js"></script> -->
+  <script type="text/javascript" src="static/js/logic2.js"></script>
 
 </body>
 
