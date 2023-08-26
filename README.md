@@ -11,7 +11,8 @@ type (earthquakes, fires, tornados, volcanos, and tsunamis) with animation and c
 This project is split up into three sections:  
   * Data and Delivery
   * Back End
-  * Visualizations  
+  * Visualizations
+
 Although it is split up into three sections, each section should flow into the next one. You should find your
 data and save it to a database. With that database, you should read in your data with Python `Flask` and create
 routes for each data table. Finally, create a map to showcase your data to be more eye appealing and interactive.
