@@ -98,17 +98,18 @@ def tsunami():
     session = Session(engine)
 
     results = session.query(Tsunami.YEAR, Tsunami.LATITUDE, Tsunami.LONGITUDE, Tsunami.COUNTRY, \
-                            Tsunami.CAUSE)
+                            Tsunami.CAUSE, Tsunami.EQ_MAGNITUDE)
     session.close()
 
     tsunami_data = []
-    for YEAR, LATITUDE, LONGITUDE, COUNTRY, CAUSE in results:
+    for YEAR, LATITUDE, LONGITUDE, COUNTRY, CAUSE, EQ_MAGNITUDE in results:
         tsunami_dict = {}
         tsunami_dict["year"] = YEAR
         tsunami_dict["lat"] = LATITUDE
         tsunami_dict["lon"] = LONGITUDE
         tsunami_dict["country"] = COUNTRY
         tsunami_dict["cause"] = CAUSE
+        tsunami_dict["eqMag"] = EQ_MAGNITUDE
         tsunami_data.append(tsunami_dict)
 
 
