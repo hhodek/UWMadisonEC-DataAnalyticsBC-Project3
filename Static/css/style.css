@@ -52,6 +52,36 @@ html {
     margin-bottom: 20px; /* Adjust the value to move the map higher */
     margin-left: 320px;
 }
+.container-plot {
+    text-align: center; /* Center-align content horizontally */
+}
+
+#chart-container {
+    width: 100%; /* Set the desired width for the chart container */
+    height: 500px; /* Set the desired height for the chart container */
+    position: relative;
+    margin-top: 20px; /* Center-align horizontally */
+    margin-bottom: 20px;
+    margin-left: 60px;
+}
+
+.col-md-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 0px; 
+    padding-left: 300px;
+ 
+}
+
+.col-md-6 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 0px;
+    padding-left: 100px;
+    float: inherit;
+}
+
+
 
 
 
