@@ -1,89 +1,103 @@
-// Load data from the first endpoint
-//d3.json('/api/v1.0/temp').then(tempData => {
-  // Load data from the second endpoint
-//  return d3.json('/api/v1.0/precip').then(precipData => {
-  //  return { precipData, tempData };
- // });
-//}).then(({ precipData, tempData }) => {
-  Promise.all([
-    d3.json('/api/v1.0/temp'),  // Load data from the first endpoint
-    d3.json('/api/v1.0/precip')     // Load data from the second endpoint
-  ]).then(([precipData, tempData]) => {
-  // Combine data from both endpoints into a single array
-  const allData = [...precipData, ...tempData];
+// Load data from the endpoint
+d3.json('/api/v1.0/temp').then(tempData => {
+  // Extract variable names for the dropdowns
+  const variableNames = Object.keys(tempData[0]);
 
-  // Get variable names from the combined data
-  const variables = Object.keys(allData[0]);
-
-  // Get dropdown elements for X and Y variables
-  const variableSelects = {
+  // Populate dropdown options with X and Y variable names
+  const dropdowns = {
     x: d3.select('#x-variable'),
     y: d3.select('#y-variable')
   };
-  
-  // Populate dropdown options with variable names
-  variables.forEach(variable => {
-    for (const key in variableSelects) {
-      variableSelects[key].append('option').text(variable);
+
+  variableNames.forEach(variable => {
+    for (const key in dropdowns) {
+      dropdowns[key].append('option').text(variable);
     }
   });
 
+  // Populate chart type dropdown manually
+  const chartTypeDropdown = d3.select('#chart-type');
+
   // Initial variable selections
-  let xVariable = variables[0];
-  let yVariable = variables[1];
+  let xVariable = variableNames[0];
+  let yVariable = variableNames[1];
+  let selectedChartType = 'scatter'; // Default chart type
 
-  // Function to create the scatter plot
-  function createScatterPlot() {
+  // Function to update the selected variables and chart type
+  function updateVariables() {
+    xVariable = dropdowns.x.property('value');
+    yVariable = dropdowns.y.property('value');
+    selectedChartType = chartTypeDropdown.property('value');
+  }
+
+  // Event listeners for variable selections and chart type
+  dropdowns.x.on('change', () => {
+    updateVariables();
+    createChart();
+  });
+
+  dropdowns.y.on('change', () => {
+    updateVariables();
+    createChart();
+  });
+
+  chartTypeDropdown.on('change', () => {
+    updateVariables();
+    createChart();
+  });
+
+  // Create the chart function
+  function createChart() {
     // Extract X and Y values based on selected variables
-    const xValues = allData.map(entry => entry[xVariable]);
-    const yValues = allData.map(entry => entry[yVariable]);
+    const xValues = tempData.map(entry => entry[xVariable]);
+    const yValues = tempData.map(entry => entry[yVariable]);
 
-    // Create trace with customized appearance
-    const scatterData = [{
-      x: xValues,
-      y: yValues,
-      mode: 'markers',
-      type: 'scatter',
-      marker: {
-        size: 10,
-        opacity: 0.7, // Adjust marker transparency
-        color: 'blue', // Set marker color
-        colorscale: 'Viridis', //color scale based on data values
-      }
-    }];
+    // Create the appropriate trace based on the selected chart type
+    let chartTrace;
+    if (selectedChartType === 'scatter') {
+      chartTrace = {
+        x: xValues,
+        y: yValues,
+        mode: 'markers',
+        type: 'scatter',
+        marker: {
+          size: 10,
+          opacity: 0.7,
+          color: 'blue',
+          colorscale: 'Viridis'
+        },
+        name: 'Scatter Plot'
+      };
+    } else if (selectedChartType === 'bar') {
+      chartTrace = {
+        x: xValues,
+        y: yValues,
+        type: 'bar',
+        opacity: 0.7,
+        marker: {
+          color: 'green'
+        },
+        name: 'Bar Chart'
+      };
+    }
 
     // Layout configuration
     const layout = {
-      title: 'Interactive Scatter Plot',
-      xaxis: { title: xVariable }, // Set X-axis title
-      yaxis: { title: yVariable }, // Set Y-axis title
-      plot_bgcolor: '#f5f5f5',      // Set plot background color
-      grid: { color: 'white' },     // Set grid color
-      legend: { x: 1, y: 1 }        // Adjust legend position
+      title: 'Interactive Chart with Different Visualizations',
+      xaxis: { title: xVariable },
+      yaxis: { title: yVariable },
+      plot_bgcolor: '#f5f5f5',
+      grid: { color: 'white' },
+      legend: { x: 1, y: 1 }
     };
 
-    // Create the scatter plot using Plotly
-    Plotly.newPlot('scatter-plot', scatterData, layout);
+    // Combine chart traces
+    const data = [chartTrace];
+
+    // Create the plot using Plotly
+    Plotly.newPlot('chart-container', data, layout);
   }
 
-  // Function to update the selected variables
-  function updateVariables(selectedKey) {
-    if (selectedKey === 'x') {
-      xVariable = variableSelects.x.property('value');
-      yVariable = variableSelects.y.property('value');
-    } else {
-      xVariable = variableSelects.y.property('value'); // This should be xVariable, not yVariable
-      yVariable = variableSelects.x.property('value'); // This should be yVariable, not xVariable
-    }
-  }
-  // Event listeners for variable selections
-  for (const key in variableSelects) {
-    variableSelects[key].on('change', () => {
-      updateVariables(key);
-      createScatterPlot();
-    });
-  }
-
-  // Initialize scatter plot when the browser is opened
-  createScatterPlot();
+  // Initialize chart when the browser is opened
+  createChart();
 });
