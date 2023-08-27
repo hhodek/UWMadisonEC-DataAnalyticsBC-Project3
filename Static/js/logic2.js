@@ -105,3 +105,5 @@ d3.json('/api/v1.0/temp').then(tempData => {
   // Initialize chart when the browser is opened
   createChart();
 });
+
+//commit message
