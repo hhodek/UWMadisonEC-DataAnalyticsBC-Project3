@@ -99,7 +99,7 @@ d3.json('/api/v1.0/volcano').then(volcanoData => {
     const data = [chartTrace];
 
     // Create the plot using Plotly
-    Plotly.newPlot('temperature-chart-container', data, layout);
+    Plotly.newPlot('chart-container', data, layout);
   }
 
   // Initialize chart when the browser is opened
