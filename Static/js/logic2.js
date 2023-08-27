@@ -1,7 +1,7 @@
 // Load data from the endpoint
-d3.json('/api/v1.0/temp').then(tempData => {
+d3.json('/api/v1.0/volcano').then(volcanoData => {
   // Extract variable names for the dropdowns
-  const variableNames = Object.keys(tempData[0]);
+  const variableNames = Object.keys(volcanoData[0]);
 
   // Populate dropdown options with X and Y variable names
   const dropdowns = {
@@ -49,8 +49,8 @@ d3.json('/api/v1.0/temp').then(tempData => {
   // Create the chart function
   function createChart() {
     // Extract X and Y values based on selected variables
-    const xValues = tempData.map(entry => entry[xVariable]);
-    const yValues = tempData.map(entry => entry[yVariable]);
+    const xValues = volcanoData.map(entry => entry[xVariable]);
+    const yValues = volcanoData.map(entry => entry[yVariable]);
 
     // Create the appropriate trace based on the selected chart type
     let chartTrace;
@@ -82,7 +82,7 @@ d3.json('/api/v1.0/temp').then(tempData => {
 
     // Layout configuration
     const layout = {
-      title: 'Interactive Chart with Different Visualizations',
+      title: 'Volcano Data', // Update title
       xaxis: { title: xVariable },
       yaxis: { title: yVariable },
       plot_bgcolor: 'rgb(151, 187, 186)', // Match background color of body
@@ -99,11 +99,9 @@ d3.json('/api/v1.0/temp').then(tempData => {
     const data = [chartTrace];
 
     // Create the plot using Plotly
-    Plotly.newPlot('chart-container', data, layout);
+    Plotly.newPlot('temperature-chart-container', data, layout);
   }
 
   // Initialize chart when the browser is opened
   createChart();
 });
-
-//commit message
