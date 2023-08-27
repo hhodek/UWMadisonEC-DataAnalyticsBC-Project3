@@ -63,8 +63,7 @@ d3.json('/api/v1.0/temp').then(tempData => {
         marker: {
           size: 10,
           opacity: 0.7,
-          color: 'blue',
-          colorscale: 'Viridis'
+          color: 'rgb(67, 97, 102)' // Match background color of jumbotron
         },
         name: 'Scatter Plot'
       };
@@ -75,7 +74,7 @@ d3.json('/api/v1.0/temp').then(tempData => {
         type: 'bar',
         opacity: 0.7,
         marker: {
-          color: 'green'
+          color: 'rgb(67, 97, 102)' // Match background color of jumbotron
         },
         name: 'Bar Chart'
       };
@@ -86,7 +85,12 @@ d3.json('/api/v1.0/temp').then(tempData => {
       title: 'Interactive Chart with Different Visualizations',
       xaxis: { title: xVariable },
       yaxis: { title: yVariable },
-      plot_bgcolor: '#f5f5f5',
+      plot_bgcolor: 'rgb(151, 187, 186)', // Match background color of body
+      paper_bgcolor: 'white', // Match paper background color of body
+      font: {
+        family: 'fantasy',
+        color: 'rgb(67, 97, 102)' // Match font color of jumbotron
+      },
       grid: { color: 'white' },
       legend: { x: 1, y: 1 }
     };
