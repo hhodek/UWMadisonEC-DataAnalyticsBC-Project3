@@ -6,6 +6,8 @@ type (earthquakes, fires, tornados, volcanos, and tsunamis) with animation and c
 
 ---
 
+
+
 ## About 
 
 This project is split up into three sections:  

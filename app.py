@@ -5,8 +5,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 import sqlite3
 import json
+import pandas as pd
+import plotly.express as px
 
-from flask import Flask, jsonify, render_template, Response
+from flask import Flask, jsonify, render_template, Response, request
 
 #################################################
 # Database Setup
@@ -40,6 +42,61 @@ app = Flask(__name__)
 @app.route("/")
 def Home():
     return render_template('index.html')
+
+@app.route("/chart")
+def chart():
+    return render_template('chart.html')
+
+@app.route("/get_columns", methods=["POST"])
+def get_columns():
+    endpoint = request.form.get("endpoint")
+    
+    if endpoint == "volcano":
+        df = pd.read_sql("SELECT * FROM volcanos", engine)
+    elif endpoint == "fire":
+        df = pd.read_sql("SELECT * FROM fires", engine)
+    elif endpoint == "tsunami":
+        df = pd.read_sql("SELECT * FROM tsunamis", engine)
+    elif endpoint == "tornado":
+        df = pd.read_sql("SELECT * FROM tornados", engine)
+    elif endpoint == "temp":
+        df = pd.read_sql("SELECT * FROM daily_weather", engine)
+    else:
+        return jsonify({"error": "Invalid endpoint"})
+    
+    columns = df.columns.tolist()
+    return jsonify({"columns": columns})
+
+@app.route("/plot_chart", methods=["POST"])
+def plot_chart():
+    endpoint = request.form.get("endpoint")
+    x_var = request.form.get("x_var")
+    y_var = request.form.get("y_var")
+    chart_type = request.form.get("chart_type")
+    
+    if endpoint == "volcano":
+        df = pd.read_sql("SELECT * FROM volcanos", engine)
+    elif endpoint == "fire":
+        df = pd.read_sql("SELECT * FROM fires", engine)
+    elif endpoint == "tsunami":
+        df = pd.read_sql("SELECT * FROM tsunamis", engine)
+    elif endpoint == "tornado":
+        df = pd.read_sql("SELECT * FROM tornados", engine)
+    elif endpoint == "temp":
+        df = pd.read_sql("SELECT * FROM daily_weather", engine)
+    else:
+        return jsonify({"error": "Invalid endpoint"})
+    
+    if chart_type == "scatter":
+        fig = px.scatter(df, x=x_var, y=y_var, title=f"{x_var} vs {y_var}")
+    elif chart_type == "bar":
+        fig = px.bar(df, x=x_var, y=y_var, title=f"{x_var} vs {y_var}")
+    else:
+        return jsonify({"error": "Invalid chart type"})
+    
+    graph_json = json.loads(fig.to_json())
+    return jsonify(graph_json)
+
 
 # Create Volcano Route
 @app.route("/api/v1.0/volcano")
