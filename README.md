@@ -6,8 +6,8 @@ type (earthquakes, fires, tornados, volcanos, and tsunamis) with animation and c
 
 ---
 
-There is also an interactive graph to explore volcano variables and a "/chart" page with the a full interactive graph
-including a dropdown to select which natural disaster but adding this page messed up the volcano data for the volcano chart so working on that
+There is also an interactive graph to explore volcano variables and a "/chart" page with the full natural disaster variable interactive graph
+which includes a dropdown to select which natural disaster to compare variables from. *Adding this page messed up the volcano data for the volcano chart so working on that and other fixes*
 
 ---
 
