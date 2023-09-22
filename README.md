@@ -2,12 +2,7 @@
 
 In this project, we will create a webpage showcasing an interactive map to see different types of natural  
 disasters in different areas of the United States and the world. Each layer will hold data for each disaster  
-type (earthquakes, fires, tornados, volcanos, and tsunamis) with animation and color/sizing for each marker. 
-
----
-
-There is also an interactive graph to explore volcano variables and a "/chart" page with the full natural disaster variable interactive graph
-which includes a dropdown to select which natural disaster to compare variables from. *Adding this page messed up the volcano data for the volcano chart so working on that and other fixes*
+type (earthquakes, fires, tornados, volcanos, and tsunamis) with animation and color/sizing for each marker. \
 
 ---
 
